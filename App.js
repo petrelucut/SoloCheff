@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import Footer from "./components/Footer";
+import MainView from "./components/MainView";
+import AddReceipe from "./components/AddReceipe";
+import Recipe from "./components/Recipe";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Favorites from "./components/Favorites";
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+
+function MyTabs() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Tab.Navigator tabBar={(props) => <Footer {...props} />}>
+      <Tab.Screen
+        name="Home"
+        component={MainView}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Add"
+        component={AddReceipe}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Favorites"
+        component={Favorites}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Recipe"
+        component={Recipe}
+        options={{ headerShown: false }}
+      />
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <NavigationContainer>
+      <MyTabs />
+    </NavigationContainer>
+  );
+}
