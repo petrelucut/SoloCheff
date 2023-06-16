@@ -29,6 +29,12 @@ export default function AddReceipe({ navigation, route }) {
 
   const getYtId = (link) => {
     if (link.includes("?v=")) {
+      if (link.includes("&list=")) {
+        return link.substring(
+          link.indexOf("?v=") + 3,
+          link.lastIndexOf("&list=")
+        );
+      }
       return link.split("?v=")[1];
     }
 

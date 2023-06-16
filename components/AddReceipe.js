@@ -22,8 +22,8 @@ import {
   addDoc,
 } from "firebase/firestore/lite";
 
-export default function AddReceipe() {
-  const [name, setName] = useState();
+export default function AddReceipe({ navigation }) {
+  const [name, setName] = useState("");
   const [ingredient, setIngredient] = useState("");
   const [ingredientList, setIngredientList] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
@@ -89,6 +89,7 @@ export default function AddReceipe() {
         MediaLibrary.createAlbumAsync("Images", asset, false)
           .then((res) => {
             setImageName(asset.filename);
+            saveToFirestore(asset.filename);
           })
           .catch(() => {
             console.log("Error In Saving File!");
@@ -117,16 +118,27 @@ export default function AddReceipe() {
     return false;
   };
 
+  const clearState = () => {
+    setName("");
+    setIngredient("");
+    setIngredientList([]);
+    setActiveTab(0);
+    setDescription("");
+    setYtLink("");
+    setRecipeImage("");
+    setImageName("");
+  };
+
   const saveToFirestore = (imageName) => {
     const data = {
       title: name,
       description: description,
-      image: "imageName",
+      image: imageName,
       ytLink: ytLink,
       isFavorite: false,
       ingredients: ingredientList,
     };
-    // const recipeRef = doc(db, "recipes");
+
     const recipeRef = collection(db, "recipes");
     addDoc(recipeRef, data)
       .then((response) => {
@@ -137,6 +149,8 @@ export default function AddReceipe() {
           25,
           50
         );
+        clearState();
+        navigation.navigate("Home");
       })
       .catch((error) => {
         ToastAndroid.showWithGravityAndOffset(
@@ -156,8 +170,7 @@ export default function AddReceipe() {
       Alert.alert("Date insuficiente", invalidRecipe, [{ text: "OK" }]);
       return;
     }
-    // saveImage();
-    saveToFirestore(imageName);
+    saveImage();
   };
 
   if (activeTab === 1) {
@@ -230,7 +243,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 30,
     marginTop: 10,
-    // paddingV: 5,
   },
   saveButton: {
     marginTop: 10,
