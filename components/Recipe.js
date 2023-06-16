@@ -5,6 +5,10 @@ import {
   Text,
   Image,
   ToastAndroid,
+  TouchableOpacity,
+  Modal,
+  Pressable,
+  ImageBackground,
 } from "react-native";
 import RadioButton from "./RadioButton";
 import { Feather } from "@expo/vector-icons";
@@ -18,6 +22,7 @@ export default function AddReceipe({ navigation, route }) {
   const [recipe, setRecipe] = useState(route.params.recipe);
   const [moreButtonOpen, setMoreButtonOpen] = useState(false);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const [isImageFullScreen, setIsImageFullScreen] = useState(false);
   const handleMoreButton = () => {
     setMoreButtonOpen(!moreButtonOpen);
   };
@@ -88,6 +93,10 @@ export default function AddReceipe({ navigation, route }) {
     }
   }, [isFocused]);
 
+  const openImage = () => {
+    setIsImageFullScreen(true);
+  };
+
   return (
     <View style={{ height: "100%" }}>
       <ScrollView
@@ -95,12 +104,34 @@ export default function AddReceipe({ navigation, route }) {
         contentContainerStyle={{ paddingBottom: 110 }}
       >
         <View>
-          <Image
-            source={{
-              uri: `file:///storage/emulated/0/Pictures/Images/${recipe.image}`,
-            }}
-            style={styles.recipeImage}
-          ></Image>
+          <TouchableOpacity onPress={openImage}>
+            <Image
+              source={{
+                uri: `file:///storage/emulated/0/Pictures/Images/${recipe.image}`,
+              }}
+              style={styles.recipeImage}
+            />
+          </TouchableOpacity>
+          <Modal
+            visible={isImageFullScreen}
+            transparent={true}
+            onRequestClose={() => setIsImageFullScreen(false)}
+          >
+            <ImageBackground
+              source={{
+                uri: `file:///storage/emulated/0/Pictures/Images/${recipe.image}`,
+              }}
+              style={styles.fullScreenImage}
+            >
+              <Pressable
+                style={styles.closeImageButton}
+                onPress={() => setIsImageFullScreen(false)}
+              >
+                <Feather name="x-circle" size={24} color="black" />
+              </Pressable>
+            </ImageBackground>
+          </Modal>
+
           <Text style={styles.titleStyle}>{recipe.title}</Text>
           <Text style={styles.ingredientsTitle}>Ingrediente:</Text>
           <View style={styles.ingredientsContainer}>
@@ -180,6 +211,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
   },
+  fullScreenImage: {
+    flex: 1,
+  },
   descriptionText: {
     fontSize: 18,
   },
@@ -188,7 +222,6 @@ const styles = StyleSheet.create({
     right: 10,
     bottom: 100,
     display: "flex",
-    // top: -10,
     backgroundColor: "#378DA7",
     borderRadius: 50,
     padding: 10,
@@ -225,5 +258,10 @@ const styles = StyleSheet.create({
   ingredientsTitle: {
     fontSize: 24,
     marginBottom: 10,
+  },
+  closeImageButton: {
+    position: "absolute",
+    top: 15,
+    right: 15,
   },
 });
