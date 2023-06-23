@@ -30,10 +30,18 @@ export default function AddReceipe({ navigation }) {
   const [description, setDescription] = useState("");
   const [ytLink, setYtLink] = useState("");
   const [recipeImage, setRecipeImage] = useState("");
-  const [imageName, setImageName] = useState("");
 
   const addIngredient = () => {
     ingredient && setIngredientList([...ingredientList, ingredient]);
+    setIngredient("");
+  };
+
+  const addIngredientCategory = () => {
+    ingredient &&
+      setIngredientList([
+        ...ingredientList,
+        { value: ingredient, isCategory: true },
+      ]);
     setIngredient("");
   };
 
@@ -43,6 +51,11 @@ export default function AddReceipe({ navigation }) {
 
   const handleEditChange = (text, index) => {
     let items = [...ingredientList];
+    if (items[index]?.isCategory) {
+      items[index].value = text;
+      setIngredientList(items);
+      return;
+    }
     items[index] = text;
     setIngredientList(items);
   };
@@ -67,6 +80,13 @@ export default function AddReceipe({ navigation }) {
           size={24}
           color={ingredient ? "#50AB42" : "#CBD6CA"}
           onPress={addIngredient}
+          style={styles.addIngredientButton}
+        />
+        <Feather
+          name="layers"
+          size={24}
+          color={ingredient ? "#50AB42" : "#CBD6CA"}
+          onPress={addIngredientCategory}
         />
       </View>
       <IngredientsContainer
@@ -88,7 +108,6 @@ export default function AddReceipe({ navigation }) {
         const asset = await MediaLibrary.createAssetAsync(recipeImage);
         MediaLibrary.createAlbumAsync("Images", asset, false)
           .then((res) => {
-            setImageName(asset.filename);
             saveToFirestore(asset.filename);
           })
           .catch(() => {
@@ -126,7 +145,6 @@ export default function AddReceipe({ navigation }) {
     setDescription("");
     setYtLink("");
     setRecipeImage("");
-    setImageName("");
   };
 
   const saveToFirestore = (imageName) => {
@@ -271,5 +289,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+  },
+  addIngredientButton: {
+    marginRight: 10,
   },
 });

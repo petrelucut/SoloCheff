@@ -29,7 +29,9 @@ export default function AddReceipe({ navigation, route }) {
   const isFocused = useIsFocused();
 
   const handleOpenPlayer = () => {
-    setIsPlayerOpen(!isPlayerOpen);
+    if (recipe.ytLink) {
+      setIsPlayerOpen(!isPlayerOpen);
+    }
   };
 
   const getYtId = (link) => {
@@ -133,13 +135,19 @@ export default function AddReceipe({ navigation, route }) {
           </Modal>
 
           <Text style={styles.titleStyle}>{recipe.title}</Text>
-          <Text style={styles.ingredientsTitle}>Ingrediente:</Text>
+          <Text style={styles.ingredientsTitle}>Ingrediente</Text>
           <View style={styles.ingredientsContainer}>
             {recipe?.ingredients &&
               recipe.ingredients.map((ingredient, index) => {
                 return (
                   <View style={styles.ingredientItem} key={index}>
-                    <RadioButton label={ingredient} />
+                    {ingredient?.isCategory ? (
+                      <Text style={styles.categoryLabel}>
+                        {ingredient.value}
+                      </Text>
+                    ) : (
+                      <RadioButton label={ingredient} />
+                    )}
                   </View>
                 );
               })}
@@ -155,16 +163,10 @@ export default function AddReceipe({ navigation, route }) {
       />
       {moreButtonOpen && (
         <View style={styles.editButton}>
-          <Feather
-            name="edit"
-            size={24}
-            color="black"
-            style={styles.functionButtons}
-          />
+          <Feather name="edit" size={24} style={styles.functionButtons} />
           <Feather
             name="heart"
             size={24}
-            color="black"
             style={[
               styles.functionButtons,
               recipe.isFavorite ? styles.isFavorite : "",
@@ -174,10 +176,10 @@ export default function AddReceipe({ navigation, route }) {
           <Feather
             name="video"
             size={24}
-            color="black"
             style={[
               styles.functionButtons,
               isPlayerOpen ? styles.activeButton : "",
+              !recipe.ytLink ? styles.buttonDisabled : "",
             ]}
             onPress={handleOpenPlayer}
           />
@@ -236,6 +238,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     borderRadius: 50,
+    color: "#000000",
   },
   playerStyle: {
     position: "absolute",
@@ -255,6 +258,10 @@ const styles = StyleSheet.create({
   ingredientItem: {
     marginBottom: 10,
   },
+  categoryLabel: {
+    fontSize: 20,
+    color: "#089600",
+  },
   ingredientsTitle: {
     fontSize: 24,
     marginBottom: 10,
@@ -263,5 +270,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 15,
     right: 15,
+  },
+  buttonDisabled: {
+    backgroundColor: "#8dc5d67b",
+    color: "#808080",
   },
 });

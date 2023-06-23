@@ -18,7 +18,16 @@ export default function IngredientsContainer({
         {ingredientList.map((ingredientName, index) => {
           return isEditItem !== index ? (
             <View key={index} style={[styles.ingredientList, styles.inlineRow]}>
-              <Text style={styles.ingredientLabel}>{ingredientName}</Text>
+              <Text
+                style={[
+                  styles.ingredientLabel,
+                  ingredientName?.isCategory ? styles.categoryLabel : "",
+                ]}
+              >
+                {ingredientName?.isCategory
+                  ? ingredientName?.value
+                  : ingredientName}
+              </Text>
               <Feather
                 name="edit-2"
                 size={24}
@@ -41,7 +50,11 @@ export default function IngredientsContainer({
                 spellCheck={false}
                 style={[styles.input, styles.ingredientInput]}
                 onChangeText={(text) => onHandleEditChange(text, index)}
-                value={ingredientName}
+                value={
+                  ingredientName?.isCategory
+                    ? ingredientName?.value
+                    : ingredientName
+                }
               />
               <Feather
                 name="save"
@@ -82,6 +95,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     fontSize: 18,
+  },
+  categoryLabel: {
+    fontSize: 20,
+    color: "#089600",
   },
   scrollViewStyle: {
     flex: 1,
