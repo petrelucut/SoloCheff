@@ -6,7 +6,7 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import IngredientsContainer from "./CreateRecipe/IngredientsContainer";
 import Tabs from "./Tabs";
@@ -14,15 +14,9 @@ import Textarea from "./CreateRecipe/Textarea";
 import MediaContainer from "./CreateRecipe/MediaContainer";
 import * as MediaLibrary from "expo-media-library";
 import db from "../db/firestore";
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  doc,
-  addDoc,
-} from "firebase/firestore/lite";
+import { collection, addDoc } from "firebase/firestore/lite";
 
-export default function AddReceipe({ navigation }) {
+export default function AddReceipe({ navigation, route }) {
   const [name, setName] = useState("");
   const [ingredient, setIngredient] = useState("");
   const [ingredientList, setIngredientList] = useState([]);
@@ -63,6 +57,17 @@ export default function AddReceipe({ navigation }) {
   const handleDescriptionChange = (text) => {
     setDescription(text);
   };
+
+  useEffect(() => {
+    if (route?.params?.recipe) {
+      const recipe = route.params.recipe;
+      setName(recipe.title);
+      setIngredientList(recipe.ingredients);
+      setDescription(recipe.description);
+      setYtLink(recipe.ytLink);
+      setRecipeImage(recipe.image);
+    }
+  }, [route.params]);
 
   let tabContent = (
     <View style={{ flex: 1 }}>
@@ -207,6 +212,25 @@ export default function AddReceipe({ navigation }) {
       />
     );
   }
+
+  useEffect(
+    () =>
+      navigation.addListener("beforeRemove", (e) => {
+        Alert.alert(
+          "Discard changes?",
+          "You have unsaved changes. Are you sure to discard them and leave the screen?",
+          [
+            { text: "Don't leave", style: "cancel", onPress: () => {} },
+            {
+              text: "Discard",
+              style: "destructive",
+              onPress: () => navigation.dispatch(e.data.action),
+            },
+          ]
+        );
+      }),
+    [navigation]
+  );
 
   return (
     <View style={styles.scrollViewStyle}>

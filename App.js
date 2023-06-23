@@ -8,7 +8,7 @@ import Favorites from "./components/Favorites";
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+function AppTabs() {
   return (
     <Tab.Navigator tabBar={(props) => <Footer {...props} />}>
       <Tab.Screen
@@ -38,7 +38,7 @@ function MyTabs() {
 export default function App() {
   return (
     <NavigationContainer>
-      <MyTabs />
+      <AppTabs />
     </NavigationContainer>
   );
 }

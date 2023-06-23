@@ -46,7 +46,14 @@ export default function MediaContainer({
       />
       <View style={styles.addImageConainer}>
         {imageSource && (
-          <Image source={{ uri: imageSource }} style={styles.imagePreview} />
+          <Image
+            source={{
+              uri: imageSource.includes("file://")
+                ? imageSource
+                : `file:///storage/emulated/0/Pictures/Images/${imageSource}`,
+            }}
+            style={styles.imagePreview}
+          />
         )}
         <View style={styles.buttonsContainer}>
           <Feather

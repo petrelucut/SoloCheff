@@ -23,10 +23,11 @@ export default function AddReceipe({ navigation, route }) {
   const [moreButtonOpen, setMoreButtonOpen] = useState(false);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [isImageFullScreen, setIsImageFullScreen] = useState(false);
+  const isFocused = useIsFocused();
+
   const handleMoreButton = () => {
     setMoreButtonOpen(!moreButtonOpen);
   };
-  const isFocused = useIsFocused();
 
   const handleOpenPlayer = () => {
     if (recipe.ytLink) {
@@ -75,6 +76,10 @@ export default function AddReceipe({ navigation, route }) {
           50
         );
       });
+  };
+
+  const editRecipe = () => {
+    navigation.navigate("Add", { isEdit: true, recipe: recipe });
   };
 
   const getRecipe = async (id) => {
@@ -163,7 +168,12 @@ export default function AddReceipe({ navigation, route }) {
       />
       {moreButtonOpen && (
         <View style={styles.editButton}>
-          <Feather name="edit" size={24} style={styles.functionButtons} />
+          <Feather
+            name="edit"
+            size={24}
+            style={styles.functionButtons}
+            onPress={editRecipe}
+          />
           <Feather
             name="heart"
             size={24}
